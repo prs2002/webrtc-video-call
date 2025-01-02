@@ -10,6 +10,12 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+
+// exposing public directory to outside world
+app.use(express.static("public"));
+// Access files in the 'public' folder at URLs like /public/image.jpg
+
+
 app.get("/",(req,res)=> {
     console.log(__dirname);
     res.sendFile(join(__dirname,'app/index.html'));
