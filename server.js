@@ -8,6 +8,7 @@ const app = express();
 
 const server = http.createServer(app);
 const io = new Server(server);
+const allusers = {};
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -21,10 +22,17 @@ app.get("/",(req,res)=> {
     res.sendFile(join(__dirname,'app/index.html'));
 })
 
+//handle socket connections
 io.on('connection', (socket) => {
     console.log(`a user connected to socket server with id ${socket.id}`);
+    socket.on("join-user", username=>{
+        console.log(`${username} joined socket connection`)
+        allusers[username] = { username, id: socket.id };
+        // inform everyone that someone joined
+        io.emit("joined", allusers);
+    })
   });
 
-app.listen(9000, ()=> {
+server.listen(9000, ()=> {
     console.log(`server listning on port 9000`);
 })
